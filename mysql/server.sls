@@ -1,12 +1,13 @@
 {% from "mysql/map.jinja" import mysql with context %}
 
 mysqld:
+{% if grains['os'] in ['Ubuntu', 'Debian'] %}
+  debconf.set_file:
+    - source: salt://mysql/files/mysql.deb.set
+{% endif %}
   pkg:
     - installed
     - name: {{ mysql.server }}
-{% if grains['os'] in ['Ubuntu', 'Debian'] %}
-    - debconf: salt://mysql/files/mysql.deb.set
-{% endif %}
   service:
     - running
     - name: {{ mysql.service }}
